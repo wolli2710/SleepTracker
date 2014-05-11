@@ -55,12 +55,13 @@ public class AudioHandler {
 		            	int currentAmplitude = getAmplitude();
 		            	if( currentAmplitude > getFrequencyOffset() ){
 		            		try {
-								jHandler.appendJsonValue(currentAmplitude+"");
+		            			long currentTimeStamp = System.currentTimeMillis();
+								jHandler.appendJsonValue(currentTimeStamp+"",currentAmplitude+"");
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
-		            		Log.i("TAG", "onRun() amplitude: "+currentAmplitude+"" );
-		            		Log.i("TAG", "onRun() amplitude size: "+(currentAmplitude > getFrequencyOffset())+"" );
+		            		//Log.i("TAG", "onRun() amplitude: "+currentAmplitude+"" );
+		            		//Log.i("TAG", "onRun() amplitude size: "+(currentAmplitude > getFrequencyOffset())+"" );
 		            	}
 		                
 		            	Thread.sleep(100);           

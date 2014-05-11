@@ -35,10 +35,10 @@ class JsonHandler{
 		return (Environment.MEDIA_MOUNTED.equals(storage_state) && !Environment.MEDIA_MOUNTED_READ_ONLY.equals(storage_state)) ? true : false;
 	}
 	
-	void appendJsonValue(String currentValue) throws JSONException
+	void appendJsonValue(String currentKey, String currentValue) throws JSONException
 	{
-		long currentTimeStamp = System.currentTimeMillis() / 1000L;
-		currentRecord.put( String.valueOf(currentTimeStamp), currentValue);
+		//long currentTimeStamp = System.currentTimeMillis() / 1000L;
+		currentRecord.put( currentKey, currentValue);
 	}
 	
 	void writeJsonToFile(String prefix) throws IOException

@@ -60,7 +60,7 @@ public class SensorActivity extends Activity implements SensorEventListener{
         
         mSensorManager.registerListener(this, 
 	        mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-	        SensorManager.SENSOR_DELAY_NORMAL);
+	        SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     private void createAudioHandler() {
@@ -107,22 +107,26 @@ public class SensorActivity extends Activity implements SensorEventListener{
         if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER){
             
             if (System.currentTimeMillis() > checkTime+20){
-                checkTime = System.currentTimeMillis();
-        
+//                checkTime = System.currentTimeMillis();
+                checkTime = event.timestamp;
+
                 if(threshold < Math.abs(check_x - event.values[0])|| threshold < Math.abs(check_y - event.values[1]) || threshold < Math.abs(check_z - event.values[2]) ){
                     check_x = event.values[0];
                     check_y = event.values[1];
                     check_z = event.values[2];
                     
-                    String res =  (System.currentTimeMillis() > checkTime+100) ? "True" : "False";
+//                    String res =  (System.currentTimeMillis() > checkTime+100) ? "True" : "False";
+                    String res =  ( event.timestamp > checkTime+100) ? "True" : "False";
+                    
                     Log.wtf("changed", res );
                     
 //                    setCurrentAcceleration( event );
                                 
-                    String jsonArray= "["+event.values[0]+","+event.values[1]+","+event.values[2]+"]";
+                    String jsonArray = "["+event.values[0]+","+event.values[1]+","+event.values[2]+"]";
+                    String jsonKey = event.timestamp+"";
                     
                     try {
-                        jHandler.appendJsonValue( jsonArray );
+                        jHandler.appendJsonValue( jsonKey, jsonArray );
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
