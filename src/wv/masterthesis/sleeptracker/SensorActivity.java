@@ -3,7 +3,6 @@ package wv.masterthesis.sleeptracker;
 import java.io.IOException;
 
 import org.json.JSONException;
-
 import android.os.Bundle;
 import android.os.Environment;
 import android.app.Activity;
@@ -23,6 +22,7 @@ public class SensorActivity extends Activity implements SensorEventListener{
     public static SensorActivity instance;
     private AudioHandler mAudioActivity;
     private JsonHandler jHandler;
+    private static boolean isRecording;
     
 //    static TextView xCoor;
 //    static TextView yCoor;
@@ -43,6 +43,7 @@ public class SensorActivity extends Activity implements SensorEventListener{
         setContentView(R.layout.activity_sensor);
         
         instance = this;
+        isRecording = true;
         
         createJsonHandler();
         createAudioHandler();
@@ -74,6 +75,7 @@ public class SensorActivity extends Activity implements SensorEventListener{
         stop_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	mAudioActivity.stopRecording();
+            	isRecording = false;
                 try {
 					writeJsonToFile();
 				} catch (IOException e) {
@@ -104,9 +106,9 @@ public class SensorActivity extends Activity implements SensorEventListener{
     //if acceleration in a certain time is bigger than the threshold write to file
     public void onSensorChanged(SensorEvent event){
         
-        if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER){
+        if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && isRecording){
             
-            if (System.currentTimeMillis() > checkTime+20){
+//            if (System.currentTimeMillis() > checkTime+20){
 //                checkTime = System.currentTimeMillis();
                 checkTime = event.timestamp;
 
@@ -131,7 +133,7 @@ public class SensorActivity extends Activity implements SensorEventListener{
                         e.printStackTrace();
                     }
                 }
-            }
+//            }
         }
     }
 
@@ -147,9 +149,5 @@ public class SensorActivity extends Activity implements SensorEventListener{
 //        yCoor.setText("Y: "+a.values[1]);
 //        zCoor.setText("Z: "+a.values[2]);
 //    }
-    
-//    private boolean getStorageState(){
-//        return jHandler.checkStorageState();
-//    }
-    
+        
 }

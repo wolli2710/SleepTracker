@@ -1,9 +1,7 @@
 package wv.masterthesis.sleeptracker;
 
 import java.io.IOException;
-
 import org.json.JSONException;
-
 import android.media.MediaRecorder;
 import android.util.Log;
 
@@ -17,6 +15,7 @@ public class AudioHandler {
 	private static Thread audioThread;
 	private static int frequencyOffset;
 	private static boolean isRecording;
+	private static String fileName = "/dev/null";
 	
 	public static AudioHandler getAudioActivity(){
 		Log.d("AudioActivity public static AudioActivity", (instance == null)+"" );
@@ -27,12 +26,14 @@ public class AudioHandler {
 	}
 	
 	private AudioHandler(){
+		setApplicationDirectory(System.currentTimeMillis()/1000+".3gp");
 		jHandler = new JsonHandler();
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        mRecorder.setOutputFile("/dev/null"); 
+        //mRecorder.setAudioSamplingRate(8000);
+        mRecorder.setOutputFile(fileName); 
         try {
 			mRecorder.prepare();
 			mRecorder.start();
@@ -64,7 +65,7 @@ public class AudioHandler {
 		            		//Log.i("TAG", "onRun() amplitude size: "+(currentAmplitude > getFrequencyOffset())+"" );
 		            	}
 		                
-		            	Thread.sleep(100);           
+		            	Thread.sleep(8);
 		            }
 		            Thread.sleep(1000);
 			    } catch (InterruptedException e) {
@@ -118,4 +119,10 @@ public class AudioHandler {
         jHandler.writeDirectory();
         jHandler.writeJsonToFile("audio_");
     }
+    
+    private void setApplicationDirectory(String _fileName){
+    	fileName = JsonHandler.applicationDirectory + "/" + _fileName;
+    }
+    	
+    
 }

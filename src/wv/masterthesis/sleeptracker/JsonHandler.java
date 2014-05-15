@@ -52,7 +52,6 @@ class JsonHandler{
 				fw.write(currentRecord.toString());
 				fw.close();	
 			}else {
-				//new AlertDialog.Builder(this).setTitle("No External Storage Device found").setMessage("fuuuuuuuuuuuu").setNeutralButton("Close", null).show();
 				Log.d("JsonHandler writeJsonToFile", "No External Storage Device found");
 			}
 		}
