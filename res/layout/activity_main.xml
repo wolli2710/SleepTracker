@@ -8,29 +8,39 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button1"
+        android:layout_centerVertical="true" >
+        
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="272dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="33dp"
+            android:text="@string/project_description" />
+        
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/imageButton1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/button1"
+        android:contentDescription="@string/settings_button"
+        android:src="@android:drawable/ic_menu_preferences" />
+
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/scrollView1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="42dp"
+        android:layout_marginBottom="27dp"
         android:text="@string/start_button" />
-
-    <ScrollView
-        android:id="@+id/scrollView1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/button1" >
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/project_description" />
-		
-    </ScrollView>
     
 </RelativeLayout>

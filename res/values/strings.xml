@@ -6,7 +6,11 @@
     <string name="hello_world">Hello world!</string>
     <string name="start_button">Start</string>
     <string name="stop_button">Stop</string>
-    <string name="project_description">Project description</string>
+    <string name="settings_button">Settings</string>
+    <string name="calibrate_button">Calibrate</string>
+    <string name="project_description"></string>
     <string name="title_activity_sensor">SensorActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_calibrate">CalibrateActivity</string>
 
 </resources>
