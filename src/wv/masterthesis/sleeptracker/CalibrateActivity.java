@@ -2,6 +2,7 @@ package wv.masterthesis.sleeptracker;
 
 import java.io.IOException;
 import android.os.Bundle;
+import android.util.Log;
 import android.app.Activity;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -14,16 +15,15 @@ public class CalibrateActivity extends Activity implements SensorEventListener {
 	public SensorManager mSensorManager;
 	private int delayMillis = 4000;
 	private JsonHandler jHandler = null;
-	private float accelerationValue = 0;
-	Thread mAccelerationThread = null;
 	
     private boolean isCalibrating;
-    public float maxValue = 0;
+    private boolean initCalibration;
+    private float maxValue = 0;
 	
-//  static TextView xCoor;
-//  static TextView yCoor;
-//  static TextView zCoor;
-	
+    private double check_x = 0.0;
+    private double check_y = 0.0;
+    private double check_z = 0.0;
+    	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -33,7 +33,8 @@ public class CalibrateActivity extends Activity implements SensorEventListener {
 		
 		createSensorManager();
 		calibrate();
-		calculateAccelerationThreshold();
+		setIsCalibrating(true);
+		setInitCalibration(true);
 	}
 	
     private void createSensorManager() { 
@@ -44,36 +45,30 @@ public class CalibrateActivity extends Activity implements SensorEventListener {
     
 	@Override
     public void onSensorChanged(SensorEvent event){
+        if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && initCalibration) {
+        	check_x = Math.abs(event.values[0]);
+        	check_y = Math.abs(event.values[1]);
+        	check_z = Math.abs(event.values[2]);
+        	setInitCalibration(false);
+        	Log.i("initx", check_x+"");
+        	Log.i("inity", check_y+"");
+        	Log.i("initz", check_z+"");
+        }
         if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && isCalibrating) {
-        	setMaxValue(event);
+        	if(SensorActivity.threshold < Math.abs(check_x - event.values[0]) || SensorActivity.threshold < Math.abs(check_y - event.values[1]) || SensorActivity.threshold < Math.abs(check_z - event.values[2]) ){
+        		setMaxValue(event);
+            }
         }
     }
     
     private void setMaxValue(SensorEvent event){
-    	float tempMaxValue = (event.values[0] > event.values[1])?event.values[0]:event.values[1];
-    	tempMaxValue = (event.values[2] > tempMaxValue)?event.values[2]:maxValue;
+    	float tempMaxValue = (float) ((Math.abs(check_x - event.values[0]) > Math.abs(check_y - event.values[1]) )? Math.abs(check_x - event.values[0]):Math.abs(check_x - event.values[1]));
+    	tempMaxValue = (float) (( Math.abs(check_z - event.values[2]) > tempMaxValue)? Math.abs(check_z - event.values[2]): tempMaxValue);
     	if(tempMaxValue > maxValue){
     		maxValue = tempMaxValue;
     	}
     }
-	
-	private void calculateAccelerationThreshold(){
-		setIsCalibrating(true);
-		Runnable runnable = new Runnable(){
-			public void run(){
-				while(getIsCalibrating()){
-					accelerationValue = getMaxValue(maxValue);
-				}
-			}
-		};
-		mAccelerationThread = new Thread(runnable);
-		mAccelerationThread.start();
-	}
-	
-	private float getMaxValue(float newValue){
-		return (newValue > accelerationValue)?newValue:accelerationValue;
-	}
-	
+		
 	private void calibrate(){
 		new android.os.Handler().postDelayed(
 			new Runnable(){
@@ -81,10 +76,11 @@ public class CalibrateActivity extends Activity implements SensorEventListener {
 					try {
 						setIsCalibrating(false);
 						jHandler.writeDirectory();
-						
-						//TODO!!!!!!!!!!!!!!!!!
-						jHandler.appendSettings("accelerationThreashold", Float.toString(accelerationValue)+"");
+
+						jHandler.appendSettings("accelerationThreashold", Float.toString(maxValue)+"");
+						SensorActivity.threshold = maxValue;
 						jHandler.writeSettingsToFile(JsonHandler.settingsFile);
+						Log.i("currentThreshold", maxValue+"");
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -95,19 +91,17 @@ public class CalibrateActivity extends Activity implements SensorEventListener {
 				}
 			}, delayMillis);
 	}
-	
-	public boolean getIsCalibrating(){
-		return isCalibrating;
-	}
-	
+		
 	public void setIsCalibrating(boolean isC){
 		isCalibrating = isC;
+	}
+	
+	public void setInitCalibration(boolean initC){
+		initCalibration = initC;
 	}
 
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

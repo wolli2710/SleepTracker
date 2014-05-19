@@ -22,7 +22,7 @@ public class SensorActivity extends Activity implements SensorEventListener{
     private AudioHandler mAudioActivity;      
     Button stop_button;
     
-	public float threshold = 0.12f;
+	public static float threshold = 0.12f;
     private boolean isRecording;
 
     public double check_x = 0.0;
