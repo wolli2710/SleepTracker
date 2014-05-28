@@ -1,23 +1,34 @@
 package wv.masterthesis.sleeptracker;
 
 
-import org.json.JSONException;
+import java.io.IOException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import android.os.Bundle;
 import android.os.Environment;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class MainActivity extends Activity{
 
-	Button start_button;
-	ImageButton settings_button;
+	Button startButton;
+	Button settingsButton;
+	Button clearButton;
+	
 	NetworkHandler networkHandler;
 	JsonHandler jHandler;
+	final Context context = this;
+	
+	TextView currentUserData;
+	JSONObject userData;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +46,37 @@ public class MainActivity extends Activity{
 			e.printStackTrace();
 		}
 
+		showCurrentUserData();
 		//TODO: make singleton
 		//networkHandler = new NetworkActivity();
 	}
 
+	private void showCurrentUserData() {
+		userData = jHandler.getCurrentUserData();
+		if(userData != null){
+			currentUserData = (TextView)findViewById(R.id.currentUserData);
+			String userDataString = "";
+			
+			try {
+				userDataString += "Weight:\t\t"+ userData.getString("weight").toString()+"\n";
+				userDataString += "Height:\t\t"+ userData.getString("height").toString() +"\n";
+				userDataString += "Age:\t\t\t\t"+ userData.getString("age").toString() +"\n";
+				userDataString += "Gender:\t"+ userData.getString("gender").toString() +"\n";
+				
+				currentUserData.setText( userDataString );
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
 	private void createButtonHandlers() {
-		start_button = (Button)findViewById(R.id.button1);
-		settings_button = (ImageButton)findViewById(R.id.imageButton1);
+		startButton = (Button)findViewById(R.id.button1);
+		settingsButton = (Button)findViewById(R.id.button_setUserData);
+		clearButton = (Button)findViewById(R.id.button_clear);
 		
-		settings_button.setOnClickListener(new View.OnClickListener() {
+		settingsButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(v.getContext(), SettingsActivity.class);
@@ -51,9 +84,34 @@ public class MainActivity extends Activity{
 			}
 		});
 		
-		start_button.setOnClickListener(new View.OnClickListener() {
+		startButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(), SensorActivity.class);
+				if(jHandler.getCurrentUserData() != null){
+					Intent intent = new Intent(v.getContext(), SensorActivity.class);
+					startActivity(intent);
+				} else {
+					AlertDialog.Builder builder = new AlertDialog.Builder( context );
+					builder.setMessage("You forgot to set the User Data")
+							.setTitle("Data Missing")
+							.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,int id) {
+									dialog.cancel();
+								}
+							});
+					AlertDialog dialog = builder.create();
+					dialog.show();
+					new Throwable("forgot to set User Data!");
+				}
+			}
+		});
+		
+		clearButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				jHandler.resetUserData();
+				Intent intent = new Intent(v.getContext(), MainActivity.class);
 				startActivity(intent);
 			}
 		});
@@ -61,6 +119,11 @@ public class MainActivity extends Activity{
 
 	private void initializeApplicationDirectory(){
 		JsonHandler.applicationDirectory = Environment.getExternalStorageDirectory() +"/"+ getPackageName();
+		try {
+			jHandler.writeDirectory();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void initializeSettings() throws JSONException{

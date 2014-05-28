@@ -29,26 +29,34 @@ public class AudioHandler {
 		setApplicationDirectory(System.currentTimeMillis()/1000+".3gp");
 		jHandler = new JsonHandler();
         mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-        //mRecorder.setAudioSamplingRate(8000);
-        mRecorder.setOutputFile(fileName); 
-        try {
-			mRecorder.prepare();
-			mRecorder.start();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
         
-        getAmplitude();
-		createAudioThread();
+        try{
+	        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+	        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+	        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+	        // mRecorder.setAudioSamplingRate(8000);
+	        mRecorder.setOutputFile(fileName);
+	        
+	        mRecorder.prepare();
+	        mRecorder.start();
+	   } catch (IOException e){
+		   e.printStackTrace();
+	   } catch (IllegalStateException e) {
+    	   e.printStackTrace();
+       }
+        
+       getAmplitude();
+       createAudioThread();
 	}
 
 	private void createAudioThread() {
-		audioThread = new Thread(new Runnable(){	
+		try {
+			jHandler.appendCurrentUserToJson();
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		audioThread = new Thread(new Runnable(){
 			@Override
 			public void run() {
 		        try {
@@ -123,6 +131,5 @@ public class AudioHandler {
     private void setApplicationDirectory(String _fileName){
     	fileName = JsonHandler.applicationDirectory + "/" + _fileName;
     }
-    	
     
 }

@@ -16,8 +16,9 @@ class JsonHandler{
 	public static String applicationDirectory;
 	public static String settingsFile = "configuration.json";
 	String storage_state = Environment.getExternalStorageState();
-	JSONObject  currentRecord = new JSONObject();
-	JSONObject currentSettings = new JSONObject();
+	private JSONObject  currentRecord = new JSONObject();
+//	private JSONObject currentSettings = new JSONObject();
+	private static JSONObject currentUserData = null;
 	InputStream is = null;
 	
 	
@@ -39,7 +40,6 @@ class JsonHandler{
 	
 	void appendJsonValue(String currentKey, String currentValue) throws JSONException
 	{
-		//long currentTimeStamp = System.currentTimeMillis() / 1000L;
 		currentRecord.put( currentKey, currentValue);
 	}
 	
@@ -49,27 +49,40 @@ class JsonHandler{
 		writeToFile(fileName, currentRecord);
 	}
 	
-	void writeSettingsToFile(String name) throws IOException
+	void appendCurrentUserToJson() throws JSONException
 	{
-		writeToFile(name, currentSettings);
+		currentRecord.put( "userData", currentUserData);
 	}
 	
-	void loadSettingsFromFile() throws JSONException{
-		String currentSettingsString = readStringFromFile(applicationDirectory+"/"+settingsFile);
-		currentSettings.get(currentSettingsString);
-		
-		//float accelerationThreshold = (float)currentSettings.getDouble("accelerationThreshold");
-		//float audioThreshold = (float)currentSettings.getInt("audioThreshold");
-		
-	}
-
-	void appendSettings(String key, String value){
-		try {
-			currentSettings.put(key, value);
-		} catch (JSONException e) {
-			e.printStackTrace();
+	public void writeUserDataToFile(String name) throws IOException{
+		if(currentUserData != null){
+			writeToFile(name, currentUserData);
+		} else {
+			
 		}
 	}
+	
+//	void writeSettingsToFile(String name) throws IOException
+//	{
+//		writeToFile(name, currentSettings);
+//	}
+//	
+//	void loadSettingsFromFile() throws JSONException{
+//		String currentSettingsString = readStringFromFile(applicationDirectory+"/"+settingsFile);
+//		currentSettings.get(currentSettingsString);
+//		
+//		SensorActivity.threshold = 0.12f;
+//		SensorActivity.threshold = (float)currentSettings.getDouble("accelerationThreshold");
+//		//float audioThreshold = (float)currentSettings.getInt("audioThreshold");
+//	}
+//
+//	void appendSettings(String key, String value){
+//		try {
+//			currentSettings.put(key, value);
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	@SuppressWarnings("resource")
 	String readStringFromFile(String fileName){
@@ -90,5 +103,18 @@ class JsonHandler{
 			}
 		}
 	}
+		
+	public void saveUserData(JSONObject jObject ){
+		currentUserData = jObject;
+	}
+	
+	public void resetUserData(){
+		currentUserData = null;
+	}
+	
+	public JSONObject getCurrentUserData(){
+		return currentUserData;
+	}
+	
 
 }

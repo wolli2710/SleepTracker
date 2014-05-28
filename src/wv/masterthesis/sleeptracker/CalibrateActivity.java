@@ -2,7 +2,6 @@ package wv.masterthesis.sleeptracker;
 
 import java.io.IOException;
 import android.os.Bundle;
-import android.util.Log;
 import android.app.Activity;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -50,14 +49,11 @@ public class CalibrateActivity extends Activity implements SensorEventListener {
         	check_y = Math.abs(event.values[1]);
         	check_z = Math.abs(event.values[2]);
         	setInitCalibration(false);
-        	Log.i("initx", check_x+"");
-        	Log.i("inity", check_y+"");
-        	Log.i("initz", check_z+"");
         }
         if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && isCalibrating) {
-        	if(SensorActivity.threshold < Math.abs(check_x - event.values[0]) || SensorActivity.threshold < Math.abs(check_y - event.values[1]) || SensorActivity.threshold < Math.abs(check_z - event.values[2]) ){
+//        	if(SensorActivity.threshold < Math.abs(check_x - event.values[0]) || SensorActivity.threshold < Math.abs(check_y - event.values[1]) || SensorActivity.threshold < Math.abs(check_z - event.values[2]) ){
         		setMaxValue(event);
-            }
+//            }
         }
     }
     
@@ -77,10 +73,9 @@ public class CalibrateActivity extends Activity implements SensorEventListener {
 						setIsCalibrating(false);
 						jHandler.writeDirectory();
 
-						jHandler.appendSettings("accelerationThreashold", Float.toString(maxValue)+"");
-						SensorActivity.threshold = maxValue;
-						jHandler.writeSettingsToFile(JsonHandler.settingsFile);
-						Log.i("currentThreshold", maxValue+"");
+//						jHandler.appendSettings("accelerationThreashold", Float.toString(maxValue)+"");
+//						SensorActivity.threshold = maxValue;
+//						jHandler.writeSettingsToFile(JsonHandler.settingsFile);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

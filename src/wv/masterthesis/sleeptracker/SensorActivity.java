@@ -13,7 +13,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.view.View;
 import android.widget.Button;
-//import android.widget.TextView;
 
 public class SensorActivity extends Activity implements SensorEventListener{
 
@@ -22,7 +21,7 @@ public class SensorActivity extends Activity implements SensorEventListener{
     private AudioHandler mAudioActivity;      
     Button stop_button;
     
-	public static float threshold = 0.12f;
+//	public static float threshold;
     private boolean isRecording;
 
     public double check_x = 0.0;
@@ -52,9 +51,9 @@ public class SensorActivity extends Activity implements SensorEventListener{
     //if acceleration in a certain time is bigger than the threshold write to file
     public void onSensorChanged(SensorEvent event){
         if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && isRecording){
-            if(threshold < Math.abs(check_x - event.values[0])|| threshold < Math.abs(check_y - event.values[1]) || threshold < Math.abs(check_z - event.values[2]) ){
+//            if(threshold < Math.abs(check_x - event.values[0])|| threshold < Math.abs(check_y - event.values[1]) || threshold < Math.abs(check_z - event.values[2]) ){
                 writeValueToJson(event);
-            }
+//            }
         }
     }
     
@@ -81,6 +80,11 @@ public class SensorActivity extends Activity implements SensorEventListener{
 
     private void createJsonHandler() {
         jHandler = new JsonHandler();
+        try {
+			jHandler.appendCurrentUserToJson();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
     }
 
     private void createAudioHandler() {
