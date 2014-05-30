@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import android.os.Environment;
 import android.util.Log;
@@ -14,13 +15,11 @@ import org.json.JSONException;
 class JsonHandler{
 
 	public static String applicationDirectory;
-	public static String settingsFile = "configuration.json";
 	String storage_state = Environment.getExternalStorageState();
-	private JSONObject  currentRecord = new JSONObject();
-//	private JSONObject currentSettings = new JSONObject();
 	private static JSONObject currentUserData = null;
 	InputStream is = null;
-	
+	String fileName = null;
+	File file = null;
 	
 	void writeDirectory() throws IOException
 	{
@@ -40,27 +39,41 @@ class JsonHandler{
 	
 	void appendJsonValue(String currentKey, String currentValue) throws JSONException
 	{
+		JSONObject currentRecord = new JSONObject();
 		currentRecord.put( currentKey, currentValue);
+		writeToFile(currentRecord);
 	}
 	
-	void writeJsonToFile(String prefix) throws IOException
-	{
-		String fileName = prefix+String.valueOf( System.currentTimeMillis() / 1000L );
-		writeToFile(fileName, currentRecord);
-	}
-	
-	void appendCurrentUserToJson() throws JSONException
-	{
-		currentRecord.put( "userData", currentUserData);
-	}
-	
-	public void writeUserDataToFile(String name) throws IOException{
-		if(currentUserData != null){
-			writeToFile(name, currentUserData);
-		} else {
-			
+	void createFile(String prefix){
+		fileName = prefix+String.valueOf( System.currentTimeMillis() / 1000L );
+		file = new File(applicationDirectory +"/"+ fileName);
+		try {
+			file.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
+		
+	void stopRecording(){
+		fileName = null;
+		file = null;
+	}
+
+	void appendCurrentUserToJson() throws JSONException
+	{
+		JSONObject currentRecord = new JSONObject();
+		currentRecord.put( "userData", currentUserData);
+		writeToFile(currentRecord);
+	}
+	
+//	public void writeUserDataToFile(String name) throws IOException{
+//		if(currentUserData != null){
+//			writeToFile(name, currentUserData);
+//		} else {
+//			
+//		}
+//	}
 	
 //	void writeSettingsToFile(String name) throws IOException
 //	{
@@ -90,20 +103,27 @@ class JsonHandler{
 		return result;
 	}
 	
-	private void writeToFile(String fileName, JSONObject record) throws IOException {
+	private void writeToFile(JSONObject record) {
 		if( new File(applicationDirectory).exists() ){
-			File file = new File(applicationDirectory +"/"+ fileName);
-			file.createNewFile();
 			if(file.exists()){
-				FileWriter fw = new FileWriter(file);
-				fw.write(record.toString());
-				fw.close();	
+				try {
+					FileWriter fw = new FileWriter(file, true);
+					//fw.write(record.toString()+",");
+					fw.append(record.toString()+",\n");
+					fw.close();	
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}else {
 				Log.d("JsonHandler writeJsonToFile", "No External Storage Device found");
 			}
 		}
 	}
 		
+	/*
+	 * Handle User Data
+	 */
 	public void saveUserData(JSONObject jObject ){
 		currentUserData = jObject;
 	}
@@ -116,5 +136,4 @@ class JsonHandler{
 		return currentUserData;
 	}
 	
-
 }

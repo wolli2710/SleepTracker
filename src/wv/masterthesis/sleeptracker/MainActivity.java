@@ -39,16 +39,7 @@ public class MainActivity extends Activity{
 		jHandler = new JsonHandler();
 		initializeApplicationDirectory();
 		
-		try {
-			initializeSettings();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		showCurrentUserData();
-		//TODO: make singleton
-		//networkHandler = new NetworkActivity();
 	}
 
 	private void showCurrentUserData() {
@@ -126,15 +117,4 @@ public class MainActivity extends Activity{
 		}
 	}
 	
-	private void initializeSettings() throws JSONException{
-		//jHandler.loadSettingsFromFile();
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
 }

@@ -1,9 +1,6 @@
 package wv.masterthesis.sleeptracker;
 
-import java.io.IOException;
-
 import org.json.JSONException;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -17,12 +14,12 @@ import android.widget.Button;
 public class SensorActivity extends Activity implements SensorEventListener{
 
     public SensorManager mSensorManager;
-    JsonHandler jHandler = null;
+    static JsonHandler jHandler = null;
     private AudioHandler mAudioActivity;      
     Button stop_button;
     
 //	public static float threshold;
-    private boolean isRecording;
+    private static boolean isRecording;
 
     public double check_x = 0.0;
     public double check_y = 0.0;
@@ -51,9 +48,7 @@ public class SensorActivity extends Activity implements SensorEventListener{
     //if acceleration in a certain time is bigger than the threshold write to file
     public void onSensorChanged(SensorEvent event){
         if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && isRecording){
-//            if(threshold < Math.abs(check_x - event.values[0])|| threshold < Math.abs(check_y - event.values[1]) || threshold < Math.abs(check_z - event.values[2]) ){
-                writeValueToJson(event);
-//            }
+        	writeValueToJson(event);
         }
     }
     
@@ -68,7 +63,7 @@ public class SensorActivity extends Activity implements SensorEventListener{
 		check_y = event.values[1];
 		check_z = event.values[2];
 		
-		String jsonArray = "["+event.values[0]+","+event.values[1]+","+event.values[2]+"]";
+		String jsonArray = event.values[0]+","+event.values[1]+","+event.values[2]+"";
 		String jsonKey = event.timestamp+"";
 		
 		try {
@@ -80,9 +75,12 @@ public class SensorActivity extends Activity implements SensorEventListener{
 
     private void createJsonHandler() {
         jHandler = new JsonHandler();
+        jHandler.createFile("acceleration_");
+        
         try {
 			jHandler.appendCurrentUserToJson();
 		} catch (JSONException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
@@ -98,14 +96,8 @@ public class SensorActivity extends Activity implements SensorEventListener{
         stop_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	mAudioActivity.stopRecording();
-            	try {
-            		jHandler.writeDirectory();
-					jHandler.writeJsonToFile("");
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
             	setIsRecording(false);
+            	jHandler = null;
                 
                 Intent intent = new Intent(v.getContext(), MainActivity.class);
                 startActivity(intent);
@@ -117,12 +109,5 @@ public class SensorActivity extends Activity implements SensorEventListener{
 	public void setIsRecording(boolean isR){
 		isRecording = isR;
 	}
-	
-//  @Override
-//  public boolean onCreateOptionsMenu(Menu menu) {
-//      // Inflate the menu; this adds items to the action bar if it is present.
-//      getMenuInflater().inflate(R.menu.sensor, menu);
-//      return true;
-//  }
-            
+	            
 }

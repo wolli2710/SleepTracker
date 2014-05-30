@@ -28,6 +28,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name="wv.masterthesis.sleeptracker.SensorActivity"
             android:label="@string/title_activity_sensor" >
         </activity>

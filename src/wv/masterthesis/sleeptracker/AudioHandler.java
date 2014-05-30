@@ -28,13 +28,13 @@ public class AudioHandler {
 	private AudioHandler(){
 		setApplicationDirectory(System.currentTimeMillis()/1000+".3gp");
 		jHandler = new JsonHandler();
+		jHandler.createFile("_audio");
         mRecorder = new MediaRecorder();
         
         try{
 	        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 	        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 	        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-	        // mRecorder.setAudioSamplingRate(8000);
 	        mRecorder.setOutputFile(fileName);
 	        
 	        mRecorder.prepare();
@@ -62,7 +62,7 @@ public class AudioHandler {
 		        try {
 		            while(isRecording){
 		            	int currentAmplitude = getAmplitude();
-		            	if( currentAmplitude > getFrequencyOffset() ){
+//		            	if( currentAmplitude > getFrequencyOffset() ){
 		            		try {
 		            			long currentTimeStamp = System.currentTimeMillis();
 								jHandler.appendJsonValue(currentTimeStamp+"",currentAmplitude+"");
@@ -71,7 +71,7 @@ public class AudioHandler {
 							}
 		            		//Log.i("TAG", "onRun() amplitude: "+currentAmplitude+"" );
 		            		//Log.i("TAG", "onRun() amplitude size: "+(currentAmplitude > getFrequencyOffset())+"" );
-		            	}
+//		            	}
 		                
 		            	Thread.sleep(8);
 		            }
@@ -97,6 +97,7 @@ public class AudioHandler {
     public void stopRecording(){
 		setIsRecording(false);
 		mRecorder.stop();
+		jHandler.stopRecording();
 		try {
 			writeJsonToFile();
 		} catch (IOException e) {
@@ -125,7 +126,7 @@ public class AudioHandler {
 	
     private void writeJsonToFile() throws IOException{
         jHandler.writeDirectory();
-        jHandler.writeJsonToFile("audio_");
+        
     }
     
     private void setApplicationDirectory(String _fileName){
