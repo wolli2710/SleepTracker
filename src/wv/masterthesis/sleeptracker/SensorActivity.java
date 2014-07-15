@@ -1,5 +1,6 @@
 package wv.masterthesis.sleeptracker;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import android.os.Bundle;
 import android.app.Activity;
@@ -63,10 +64,13 @@ public class SensorActivity extends Activity implements SensorEventListener{
 		check_y = event.values[1];
 		check_z = event.values[2];
 		
-		String jsonArray = event.values[0]+","+event.values[1]+","+event.values[2]+"";
+		JSONArray jsonArray = new JSONArray();
 		String jsonKey = event.timestamp+"";
 		
 		try {
+			jsonArray.put(event.values[0]);
+			jsonArray.put(event.values[1]);
+			jsonArray.put(event.values[2]);
 		    jHandler.appendJsonValue( jsonKey, jsonArray );
 		} catch (JSONException e) {
 		    e.printStackTrace();

@@ -1,9 +1,11 @@
 package wv.masterthesis.sleeptracker;
-import java.io.File;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import android.os.Environment;
 import android.util.Log;
@@ -24,7 +26,6 @@ class JsonHandler{
 			File newDir = new File( applicationDirectory );
 			newDir.mkdir();
 		} else {
-		    //new AlertDialog.Builder(this).setTitle("No External Storage Device found").setMessage("Please insert external Storage Device").setNeutralButton("Close", null).show();
 			Log.d("JsonHandler writeDirectory", "No External Storage Device found");
 		}
 	}
@@ -41,13 +42,19 @@ class JsonHandler{
 		writeToFile(currentRecord);
 	}
 	
+	void appendJsonValue(String currentKey, JSONArray currentValue) throws JSONException
+	{
+		JSONObject currentRecord = new JSONObject();
+		currentRecord.put( currentKey, currentValue);
+		writeToFile(currentRecord);
+	}
+	
 	void createFile(String prefix){
 		fileName = prefix+String.valueOf( System.currentTimeMillis() / 1000L );
 		file = new File(applicationDirectory +"/"+ fileName);
 		try {
 			file.createNewFile();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -63,22 +70,15 @@ class JsonHandler{
 		currentRecord.put( "userData", currentUserData);
 		writeToFile(currentRecord);
 	}
-	
-//	String readStringFromFile(String fileName){
-//		String result = new Scanner(fileName).useDelimiter("\\A").next();
-//		return result;
-//	}
-	
+		
 	private void writeToFile(JSONObject record) {
 		if( new File(applicationDirectory).exists() ){
 			if(file.exists()){
 				try {
 					FileWriter fw = new FileWriter(file, true);
-					//fw.write(record.toString()+",");
 					fw.append(record.toString()+",\n");
 					fw.close();	
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}else {
