@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 import android.os.Environment;
 import android.util.Log;
@@ -67,41 +64,10 @@ class JsonHandler{
 		writeToFile(currentRecord);
 	}
 	
-//	public void writeUserDataToFile(String name) throws IOException{
-//		if(currentUserData != null){
-//			writeToFile(name, currentUserData);
-//		} else {
-//			
-//		}
+//	String readStringFromFile(String fileName){
+//		String result = new Scanner(fileName).useDelimiter("\\A").next();
+//		return result;
 //	}
-	
-//	void writeSettingsToFile(String name) throws IOException
-//	{
-//		writeToFile(name, currentSettings);
-//	}
-//	
-//	void loadSettingsFromFile() throws JSONException{
-//		String currentSettingsString = readStringFromFile(applicationDirectory+"/"+settingsFile);
-//		currentSettings.get(currentSettingsString);
-//		
-//		SensorActivity.threshold = 0.12f;
-//		SensorActivity.threshold = (float)currentSettings.getDouble("accelerationThreshold");
-//		//float audioThreshold = (float)currentSettings.getInt("audioThreshold");
-//	}
-//
-//	void appendSettings(String key, String value){
-//		try {
-//			currentSettings.put(key, value);
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
-	@SuppressWarnings("resource")
-	String readStringFromFile(String fileName){
-		String result = new Scanner(fileName).useDelimiter("\\A").next();
-		return result;
-	}
 	
 	private void writeToFile(JSONObject record) {
 		if( new File(applicationDirectory).exists() ){

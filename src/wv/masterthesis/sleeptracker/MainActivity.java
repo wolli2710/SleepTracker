@@ -1,8 +1,6 @@
 package wv.masterthesis.sleeptracker;
 
-
 import java.io.IOException;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.os.Bundle;
@@ -12,7 +10,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,8 +19,7 @@ public class MainActivity extends Activity{
 	Button startButton;
 	Button settingsButton;
 	Button clearButton;
-	
-	NetworkHandler networkHandler;
+
 	JsonHandler jHandler;
 	final Context context = this;
 	
@@ -38,7 +34,6 @@ public class MainActivity extends Activity{
 		createButtonHandlers();
 		jHandler = new JsonHandler();
 		initializeApplicationDirectory();
-		
 		showCurrentUserData();
 	}
 
@@ -53,10 +48,8 @@ public class MainActivity extends Activity{
 				userDataString += "Height:\t\t"+ userData.getString("height").toString() +"\n";
 				userDataString += "Age:\t\t\t\t"+ userData.getString("age").toString() +"\n";
 				userDataString += "Gender:\t"+ userData.getString("gender").toString() +"\n";
-				
 				currentUserData.setText( userDataString );
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -67,14 +60,23 @@ public class MainActivity extends Activity{
 		settingsButton = (Button)findViewById(R.id.button_setUserData);
 		clearButton = (Button)findViewById(R.id.button_clear);
 		
-		settingsButton.setOnClickListener(new View.OnClickListener() {
+		createSettingsButtonListener();
+		createStartButtonListener();
+		createClearButtonListener();
+	}
+
+	private void createClearButtonListener() {
+		clearButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(), SettingsActivity.class);
+				jHandler.resetUserData();
+				Intent intent = new Intent(v.getContext(), MainActivity.class);
 				startActivity(intent);
 			}
 		});
-		
+	}
+
+	private void createStartButtonListener() {
 		startButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				if(jHandler.getCurrentUserData() != null){
@@ -95,14 +97,13 @@ public class MainActivity extends Activity{
 				}
 			}
 		});
-		
-		clearButton.setOnClickListener(new View.OnClickListener() {
+	}
 
+	private void createSettingsButtonListener() {
+		settingsButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				jHandler.resetUserData();
-				Intent intent = new Intent(v.getContext(), MainActivity.class);
+				Intent intent = new Intent(v.getContext(), SettingsActivity.class);
 				startActivity(intent);
 			}
 		});
@@ -116,5 +117,5 @@ public class MainActivity extends Activity{
 			e.printStackTrace();
 		}
 	}
-	
+
 }

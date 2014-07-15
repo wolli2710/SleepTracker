@@ -13,7 +13,6 @@ public class AudioHandler {
 	private JsonHandler jHandler = null;
 	
 	private static Thread audioThread;
-	private static int frequencyOffset;
 	private static boolean isRecording;
 	private static String fileName = "/dev/null";
 	
@@ -111,14 +110,6 @@ public class AudioHandler {
 	public void startRecording(){
 		setIsRecording(true);
 	}
-
-	private int getFrequencyOffset() {
-		return frequencyOffset;
-	}
-
-	public void setFrequencyOffset(int fo) {
-		frequencyOffset = fo;
-	}
 	
 	private void setIsRecording(boolean value) {
 		isRecording = value;
@@ -126,7 +117,6 @@ public class AudioHandler {
 	
     private void writeJsonToFile() throws IOException{
         jHandler.writeDirectory();
-        
     }
     
     private void setApplicationDirectory(String _fileName){

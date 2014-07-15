@@ -87,7 +87,6 @@ public class SensorActivity extends Activity implements SensorEventListener{
 
     private void createAudioHandler() {
         mAudioActivity = AudioHandler.getAudioActivity();
-        mAudioActivity.setFrequencyOffset(1000);
         mAudioActivity.startRecording();
     }
 
