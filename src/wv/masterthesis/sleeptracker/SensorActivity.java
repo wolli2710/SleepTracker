@@ -19,7 +19,6 @@ public class SensorActivity extends Activity implements SensorEventListener{
     private AudioHandler mAudioActivity;      
     Button stop_button;
     
-//	public static float threshold;
     private static boolean isRecording;
 
     public double check_x = 0.0;
@@ -42,11 +41,9 @@ public class SensorActivity extends Activity implements SensorEventListener{
     
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO Auto-generated method stub
 	}
 
 	//check if acceleration sensor has changed
-    //if acceleration in a certain time is bigger than the threshold write to file
     public void onSensorChanged(SensorEvent event){
         if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER && isRecording){
         	writeValueToJson(event);
@@ -84,7 +81,6 @@ public class SensorActivity extends Activity implements SensorEventListener{
         try {
 			jHandler.appendCurrentUserToJson();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }

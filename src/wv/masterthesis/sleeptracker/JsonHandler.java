@@ -35,7 +35,7 @@ class JsonHandler{
 		return (Environment.MEDIA_MOUNTED.equals(storage_state) && !Environment.MEDIA_MOUNTED_READ_ONLY.equals(storage_state)) ? true : false;
 	}
 	
-	void appendJsonValue(String currentKey, String currentValue) throws JSONException
+	void appendJsonValue(String currentKey, int currentValue) throws JSONException
 	{
 		JSONObject currentRecord = new JSONObject();
 		currentRecord.put( currentKey, currentValue);
@@ -86,10 +86,7 @@ class JsonHandler{
 			}
 		}
 	}
-		
-	/*
-	 * Handle User Data
-	 */
+	
 	public void saveUserData(JSONObject jObject ){
 		currentUserData = jObject;
 	}

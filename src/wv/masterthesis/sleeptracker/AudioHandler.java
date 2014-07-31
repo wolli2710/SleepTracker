@@ -5,9 +5,8 @@ import org.json.JSONException;
 import android.media.MediaRecorder;
 import android.util.Log;
 
-
-public class AudioHandler {
-	
+public class AudioHandler 
+{	
 	public static AudioHandler instance = null;
 	private MediaRecorder mRecorder = null;
 	private JsonHandler jHandler = null;
@@ -27,7 +26,7 @@ public class AudioHandler {
 	private AudioHandler(){
 		setApplicationDirectory(System.currentTimeMillis()/1000+".3gp");
 		jHandler = new JsonHandler();
-		jHandler.createFile("_audio");
+		jHandler.createFile("audio_");
         mRecorder = new MediaRecorder();
         
         try{
@@ -52,7 +51,6 @@ public class AudioHandler {
 		try {
 			jHandler.appendCurrentUserToJson();
 		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		audioThread = new Thread(new Runnable(){
@@ -61,23 +59,17 @@ public class AudioHandler {
 		        try {
 		            while(isRecording){
 		            	int currentAmplitude = getAmplitude();
-//		            	if( currentAmplitude > getFrequencyOffset() ){
 		            		try {
 		            			long currentTimeStamp = System.currentTimeMillis();
-								jHandler.appendJsonValue(currentTimeStamp+"",currentAmplitude+"");
+								jHandler.appendJsonValue(currentTimeStamp+"",currentAmplitude);
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
-		            		//Log.i("TAG", "onRun() amplitude: "+currentAmplitude+"" );
-		            		//Log.i("TAG", "onRun() amplitude size: "+(currentAmplitude > getFrequencyOffset())+"" );
-//		            	}
-		                
 		            	Thread.sleep(8);
 		            }
 		            Thread.sleep(1000);
 			    } catch (InterruptedException e) {
-			            // TODO Auto-generated catch block
-			            e.printStackTrace();
+			    	e.printStackTrace();
 			    }
 			}
 		});
